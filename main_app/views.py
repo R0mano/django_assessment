@@ -1,6 +1,21 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.views.generic.edit import CreateView
+from .models import Item
 
 # Create your views here.
 def home(request):
-  return HttpResponse('<h1>Hello /ᐠ｡‸｡ᐟ\ﾉ</h1>')
+  items = Item.objects.all()
+  return render(request, 'home.html', {'items': items})
+
+def add(request):
+  return render(request, 'add.html')
+
+class CreateItem(CreateView):
+  model = Item
+  fields = '__all__'
+  success_url = '/'
+
+def delete_item(request, item_id):
+  item =Item.objects.get(id=item_id)
+  item.delete()
+  return redirect('home')
